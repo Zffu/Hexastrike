@@ -1,5 +1,9 @@
 #include <hexastrike.h>
+
 #include <thread/pool.h>
+#include <thread/thread.h>
+#include <thread/ctx.h>
+
 #include <server.h>
 #include <client/connection.h>
 #include <debug.h>
@@ -9,6 +13,7 @@
 
 #ifdef _WIN32
 #include <WinSock2.h>
+#include <process.h>
 
 #else
 
@@ -17,6 +22,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <pthread.h>
 
 #endif
 
@@ -160,5 +166,42 @@ void hexastrike_dloop(HEXASTRIKE_SERVER* server) {
             #endif
 
         }
+    }
+}
+
+
+void hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
+    for(int i = 0; i < HEXASTRIKE_IO_THREAD_POOL_MEMBERS; ++i) {
+
+        IOPOOL_MEMBER_EXECCTX* ctx = malloc(sizeof(IOPOOL_MEMBER_EXECCTX));
+        ctx->index = i;
+        ctx->pool = &server->pool;
+
+#ifdef _WIN32
+        HANDLE thread = (HANDLE) _beginthreadex(NULL, 0, hexastrike_io_thread_pool_member_exec, ctx, 0, NULL);
+        
+        #ifdef HEXASTRIKE_NULL_CHECKS
+        if(thread == NULL) {
+            printf("IO Thread creation failed!\n");
+            free(ctx);
+        }
+        #endif
+
+        CloseHandle(thread);
+
+#else
+        pthread_t t;
+        int i = pthread_create(&t, NULL, hexastrike_io_thread_pool_member_exec, ctx);
+
+        #ifdef HEXASTRIKE_NULL_CHECKS
+        if(i != 0) {
+            printf("IO THread creation failed!\n");
+            free(ctx);
+        }
+        #endif
+
+        pthread_detach(t);
+
+#endif
     }
 }

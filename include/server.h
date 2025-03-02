@@ -22,4 +22,7 @@ void hexastrike_sdown(HEXASTRIKE_SERVER* server);
 
 void hexastrike_dloop(HEXASTRIKE_SERVER* server);
 
+
+void hexastrike_iopinit(HEXASTRIKE_SERVER* server);
+
 #endif
