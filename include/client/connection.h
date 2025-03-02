@@ -28,4 +28,6 @@ typedef struct CONNECTION_NOTREE CONNECTION; // Not recomended at all!
 typedef struct CONNECTION_TREE CONNECTION; 
 #endif
 
+unsigned char conn_cconected(CONNECTION* c);
+
 #endif
