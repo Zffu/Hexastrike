@@ -43,6 +43,14 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
 
     setsockopt(server->server_socket, SOL_SOCKET, SO_REUSEADDR, (const char*) &opt, sizeof(opt));
 
+    #ifdef _WIN32
+    u_long mode = 1;
+    ioctlsocket(server->server_socket, FIONBIO, &mode);
+    #else
+    int flags = fcntl(server->server_socket, F_GETFL, 0);
+    fcntl(server->server_socket, F_SETFL, flags | O_NONBLOCK);
+    #endif
+
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(server->server_socket < 0) {
         printf("Server socket creation failed!\n");
