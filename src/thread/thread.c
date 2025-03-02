@@ -42,32 +42,36 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
         CONNECTION* c = ctx->pool->members[ctx->index].root;
 
         while(c != NULL) {
+            CONNECTION* current = c;
+            c = c->next;
 
-            if(conn_cconected(c) == 0x00) {
-                CONNECTION* next = c->next;
-
-                if(c->prev != NULL) {
-                    c->prev->next = next;
+            if(conn_cconected(current) == 0x00) {
+                
+                if(current->prev != NULL) {
+                    current->prev->next = current->next;
                 }
                 else {
-                    ctx->pool->members[ctx->index].root = next;
+                    ctx->pool->members[ctx->index].root = current->next;
                 }
 
-                c = next;
+                if(current->next != NULL) {
+                    current->next->prev = current->prev;
+                }
+
+                free(current);
+
                 --ctx->pool->members[ctx->index].size;
 
-                printf("Client disconnected! (%d in IO #%d)\n", ctx->pool->members[ctx->index].size, ctx->index);
+                if(ctx->pool->members[ctx->index].size >= -10) printf("Client disconnected! (%d in IO #%d)\n", ctx->pool->members[ctx->index].size, ctx->index);
                 continue;
             }
 
             char buff[HEXASTRIKE_IO_BUFFER_SIZE];
-            int r = recv(c->socket, buff, HEXASTRIKE_IO_BUFFER_SIZE, 0);
+            int r = recv(current->socket, buff, HEXASTRIKE_IO_BUFFER_SIZE, 0);
 
             if(r > 0) {
-                printf("[IO #%d] Recieved %d bytes from client!\n", ctx->index, r);
+                ctx->r_handler(current, buff, r, ctx->index);            
             }
-        
-            c = c->next;
         }
 
     }

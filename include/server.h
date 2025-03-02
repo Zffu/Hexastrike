@@ -16,7 +16,7 @@ typedef struct HEXASTRIKE_SOCKET_SERVER {
     socket_t server_socket;
     IO_THREAD_POOL pool;
 
-    void (*r_handler)(CONNECTION, unsigned char*, int, int);
+    void (*r_handler)(CONNECTION*, unsigned char*, int, int);
 
 } HEXASTRIKE_SERVER;
 

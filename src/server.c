@@ -6,10 +6,12 @@
 
 #include <server.h>
 #include <client/connection.h>
-#include <debug.h>
+#include <bench.h>
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#include <debug.h>
 
 #ifdef _WIN32
 #include <WinSock2.h>
@@ -122,6 +124,7 @@ void hexastrike_dloop(HEXASTRIKE_SERVER* server) {
         saddr caddr;
         int len = sizeof(caddr);
 
+        double t = get_time();
         socket_t csocket = accept(server->server_socket, (saddr_g*) &caddr, &len);
 
         if(csocket != INVALID_SOCKET) {
@@ -153,8 +156,9 @@ void hexastrike_dloop(HEXASTRIKE_SERVER* server) {
                     m->last = c;
                 }
                 ++m->size;
-
-                printf("Added new connection to thread pool!, size: %d\n", m->size);
+                
+                t = get_time() - t;
+                printf("Added new connection to thread pool in %.2fus!, size: %d\n", t, m->size);
                 
                 printf("Approximate Total RAM usage: %db\n", dmem_usage(server));
 
@@ -175,6 +179,7 @@ void hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
 
         IOPOOL_MEMBER_EXECCTX* ctx = malloc(sizeof(IOPOOL_MEMBER_EXECCTX));
         ctx->index = i;
+        ctx->r_handler = server->r_handler;
         ctx->pool = &server->pool;
 
 #ifdef _WIN32

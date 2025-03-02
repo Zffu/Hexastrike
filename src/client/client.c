@@ -1,5 +1,6 @@
 #include <server.h>
 #include <client/client.h>
+#include <stdio.h>
 
 #ifdef _WIN32
     #include <winsock2.h>
@@ -27,5 +28,5 @@ void c_dsconn(HEXASTRIKE_SERVER* server, int index, CONNECTION* c) {
     free(c);
     --server->pool.members[index].size;
 
-    printf("Client disconnected (%d in IO #%d)\n", server->pool.members[index].size, index);
+    printf("2 Client disconnected (%d in IO #%d)\n", server->pool.members[index].size, index);
 }

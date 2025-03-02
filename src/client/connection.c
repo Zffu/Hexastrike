@@ -22,8 +22,6 @@ unsigned char conn_cconected(CONNECTION* c) {
     } else if (bytes_received < 0) {
         #ifdef _WIN32
         int error = WSAGetLastError();
-        printf("error: %d\n", error);
-        if(error )
         if (error == WSAECONNRESET || error == WSAECONNABORTED) {
             return 0x00;
         }
