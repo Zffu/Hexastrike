@@ -1,5 +1,8 @@
 #include <client/connection.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #ifdef _WIN32
 #include <WinSock2.h>
 #else 
@@ -11,24 +14,24 @@
 #endif
 
 unsigned char conn_cconected(CONNECTION* c) {
-    char buff;
-    int r;
-
-#ifdef _WIN32
-    r = recv(c->socket, &buff, 1, MSG_PEEK);
-    if(r == 0) return 0;
-    if(r == -1) {
-        if(WSAGetLastError() == WSAEWOULDBLOCK) return 1;
-        return 0;
+    char buffer[1];
+    int bytes_received = recv(c->socket, buffer, sizeof(buffer), MSG_PEEK);
+    
+    if (bytes_received == 0) {
+        return 0x00; // Connection closed gracefully
+    } else if (bytes_received < 0) {
+        #ifdef _WIN32
+        int error = WSAGetLastError();
+        printf("error: %d\n", error);
+        if(error )
+        if (error == WSAECONNRESET || error == WSAECONNABORTED) {
+            return 0x00;
+        }
+        #else
+        if (errno == ECONNRESET || errno == ECONNABORTED) {
+            return 0x00;
+        }
+        #endif
     }
-#else
-    r = recv(c->socket, &buff, 1, MSG_PEEK | MSG_DONTWAIT);
-    if(r == 0) return 0;
-    if(r == -1) {
-        if(errno == EAGAIN || errno == EWOULDBLOCK) return 1;
-        return 0;
-    }
-#endif
-
-    return 1;
+    return 0x01;
 }

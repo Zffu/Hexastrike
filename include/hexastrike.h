@@ -18,6 +18,8 @@ typedef struct sockaddr saddr_g;
 
 #endif
 
+#define HEXASTRIKE_IO_BUFFER_SIZE 2048
+
 #ifndef HEXASTRIKE_IO_THREAD_POOL_MEMBERS
 #define HEXASTRIKE_IO_THREAD_POOL_MEMBERS 2
 

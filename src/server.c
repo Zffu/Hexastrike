@@ -77,7 +77,7 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
     }
     #endif
 
-    i = listen(server->server_socket, 5);
+    i = listen(server->server_socket, 10);
 
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(i < 0) {
@@ -124,7 +124,7 @@ void hexastrike_dloop(HEXASTRIKE_SERVER* server) {
 
         socket_t csocket = accept(server->server_socket, (saddr_g*) &caddr, &len);
 
-        if(csocket >= 0) {
+        if(csocket != INVALID_SOCKET) {
             int low = INT_MAX;
             IO_THREADPOOL_MEMBER* m = NULL;
 
