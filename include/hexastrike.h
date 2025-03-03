@@ -17,12 +17,3 @@ typedef struct sockaddr_in saddr;
 typedef struct sockaddr saddr_g;
 
 #endif
-
-#define HEXASTRIKE_IO_BUFFER_SIZE 2048
-
-#ifndef HEXASTRIKE_IO_THREAD_POOL_MEMBERS
-#define HEXASTRIKE_IO_THREAD_POOL_MEMBERS 2
-
-#define HEXASTIRKE_IOTHREAD_INDICATOR unsigned char
-
-#endif

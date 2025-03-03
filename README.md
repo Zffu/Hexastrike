@@ -16,6 +16,15 @@ Then run this command:
 make clean all
 ```
 
+### Build Options
+Here's the list of building options that you can add in the Makefile currently:
+- `-DHEXASTRIKE_NULL_CHECKS`: If this option is added, Hexastrike will have null checks
+
+- `-DHEXASTRIKE_IO_THREAD_POOL_MEMBERS` (Required): Determines the amounts of IO working threads that Hexastrike will have
+- `DHEXASTIRKE_IOTHREAD_INDICATOR` (Required): Determines the type of number that Hexastrike will use to store Thread active statuses. Must be a type that contains enough bits for all of the thread pool members to have a bit each.
+
+- `-DHEXASTRIKE_IO_BUFFER_SIZE` (Required): The size of the IO byte buffer that Hexastrike will process.
+
 ## Usage
 
 ### Getting Started
