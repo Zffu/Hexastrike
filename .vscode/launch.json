@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C++ Launch",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/hexastrike.exe",
+      "environment": [{ "name": "config", "value": "Debug" }],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

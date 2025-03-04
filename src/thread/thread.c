@@ -20,9 +20,12 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
 #endif
     IOPOOL_MEMBER_EXECCTX* ctx = (IOPOOL_MEMBER_EXECCTX*) arg;
 
+#ifdef HEXASTRIKE_SOFT_IO_THREAD
     int empty_iter = 0;
+#endif
     while(ctx->pool->indicator & (1L << ctx->index)) {
         if(ctx->pool->members[ctx->index].size == 0) {
+#ifdef HEXASTRIKE_SOFT_IO_THREAD
             ++empty_iter;
 
             if(empty_iter >= 1000) {
@@ -34,10 +37,12 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
             else if(empty_iter >= 10) {
                 thread_sleep(1);
             }
-
+#endif
             continue;
         }
+#ifdef HEXASTRIKE_SOFT_IO_THREAD
         empty_iter = 0;
+#endif
 
         CONNECTION* c = ctx->pool->members[ctx->index].root;
 
