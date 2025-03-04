@@ -25,6 +25,11 @@ Here's the list of building options that you can add in the Makefile currently:
 
 - `-DHEXASTRIKE_IO_BUFFER_SIZE` (Required): The size of the IO byte buffer that Hexastrike will process.
 
+- `-DHEXASTRIKE_SOFT_IO_THREAD`: Makes the IO threads slower and softer when no client is connected.
+
+- `-DHEXASTIRKE_NO_R_HANDLER`: Removes and disables the handling for recieved bytes.
+- `-DHEXASTRIKE_NO_D_HANDLER`: Removes and disables the handling for disconnected connections.
+
 ## Usage
 
 ### Getting Started

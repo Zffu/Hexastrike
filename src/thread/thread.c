@@ -70,10 +70,15 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
 
                 --ctx->pool->members[ctx->index].size;
 
+#ifndef HEXASTRIKE_NO_D_HANDLER
+                ctx->d_handler(current, ctx->index);
+#endif
+
                 printf("Client disconnected! (%d in IO #%d)\n", ctx->pool->members[ctx->index].size, ctx->index);
                 continue;
             }
 
+#ifndef HEXASTIRKE_NO_R_HANDLER
             char buff[HEXASTRIKE_IO_BUFFER_SIZE];
             int r = recv(current->socket, buff, HEXASTRIKE_IO_BUFFER_SIZE, 0);
 
@@ -81,6 +86,7 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
                 ctx->r_handler(current, buff, r, ctx->index);            
             }
         }
+#endif
 
     }
 }
