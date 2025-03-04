@@ -74,7 +74,9 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
                 ctx->d_handler(current, ctx->index);
 #endif
 
+#ifdef HEXASTRIKE_DEBUG_LOGS
                 printf("Client disconnected! (%d in IO #%d)\n", ctx->pool->members[ctx->index].size, ctx->index);
+#endif
                 continue;
             }
 
