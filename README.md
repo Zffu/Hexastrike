@@ -30,6 +30,8 @@ Here's the list of building options that you can add in the Makefile currently:
 - `-DHEXASTIRKE_NO_R_HANDLER`: Removes and disables the handling for recieved bytes.
 - `-DHEXASTRIKE_NO_D_HANDLER`: Removes and disables the handling for disconnected connections.
 
+- `-DHEXASTRIKE_DEBUG_LOGS`: Will show debug information about clients joining and disconnecting if enabled.
+
 ## Usage
 
 ### Getting Started
