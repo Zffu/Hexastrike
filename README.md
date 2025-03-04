@@ -13,6 +13,13 @@ In order to build Hexastrike, you will need a C compiler and Make.
 
 Then run this command:
 ```
+make clean lib
+```
+
+This will generate a built library of Hexastrike that you will be able to use.
+
+Alternatively, you can build a test version of Hexastrike with sample code by doing:
+```
 make clean all
 ```
 
