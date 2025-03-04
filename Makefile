@@ -20,9 +20,9 @@ LIB_NAME = hexastrike$(LIB_EXT)
 TARGET = hexastrike$(EXE_EXT)
 
 # Source files
-C_SOURCES = $(wildcard src/*.c src/**/*.c src/**/**/*.c testserver/*.c)
+C_SOURCES = $(wildcard src/*.c src/**/*.c src/**/**/*.c example/*.c)
 HEADERS = $(wildcard include/*.h include/*/*.h include/*/*/*.h)
-LIB_SOURCES = $(filter-out testserver/%.c, $(C_SOURCES))
+LIB_SOURCES = $(filter-out example/%.c, $(C_SOURCES))
 OBJ = ${C_SOURCES:.c=.o}
 LIB_OBJECTS = ${LIB_SOURCES:.c=.o}
 
