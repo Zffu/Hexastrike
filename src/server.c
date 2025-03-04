@@ -141,8 +141,11 @@ void hexastrike_dloop(HEXASTRIKE_SERVER* server) {
             }
 
             if(m != NULL) {
+#ifndef HEXASTRIKE_CONN_ALLOCSIZE
                 CONNECTION* c = malloc(sizeof(CONNECTION));
-                
+#else
+                CONNECTION* c = malloc(HEXASTRIKE_CONN_ALLOCSIZE);
+#endif
                 c->address = caddr;
                 c->socket = csocket;
                 c->next = NULL;

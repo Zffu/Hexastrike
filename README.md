@@ -32,6 +32,8 @@ Here's the list of building options that you can add in the Makefile currently:
 
 - `-DHEXASTRIKE_DEBUG_LOGS`: Will show debug information about clients joining and disconnecting if enabled.
 
+- `-DHEXASTRIKE_CONN_ALLOCSIZE`: Determines how much bytes will be allocated to each connection.
+
 ## Usage
 
 ### Getting Started
@@ -86,3 +88,39 @@ int main() {
 This will register the `handle_input` function as the handler `r_handler` which handles recieved client data.
 
 In this simple example, we notify how much bytes were recieved and disconnect the client after by using `c_dsconn`
+
+### Storing data for connections
+
+Hexastrike allows to directly store data for each connection, in order to do so you must specify the `HEXASTRIKE_CONN_ALLOCSIZE` option, this option will determine how much size is allocated to the connection. (Please note that this value must be higher than 40).
+
+As an example, let's say we want to store 5 bytes in the connection, we first need to set `HEXASTRIKE_CONN_ALLOCSIZE` to 45 (40 being the base CONNECTION size and 5 being the size of our data).
+
+Then, in order to modify or get said data we can simply make a type similar to the connection but with our data: 
+
+```C
+#include <hexastrike.h>
+
+typedef struct MY_CUSTOM_CONNECTION {
+
+    socket_t socket;
+    saddr address;
+
+    struct MY_CUSTOM_CONNECTION* prev;
+    struct MY_CUSTOM_CONNECTION* next;
+
+    unsigned char myBytes[5];
+
+
+} MY_CUSTOM_CONNECTION;
+```
+
+We can then simply cast the `CONNECTION` pointer to our `MY_CUSTOM_CONNECTION`:
+```C
+void handle(CONNECTION* c, unsigned char* b, int size, int index) {
+    MY_CUSTOM_CONNECTION* my = (MY_CUSTOM_CONNECTION*) c;
+
+    byte myByte = myBytes[3];
+}
+```
+
+**Note:** Hexastrike will only free the original pointer, if you add any pointers to your `CONNECTION` structure you will need to free them.
