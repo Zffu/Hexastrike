@@ -79,7 +79,7 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
     }
     #endif
 
-    i = listen(server->server_socket, 10);
+    i = listen(server->server_socket, 128);
 
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(i < 0) {

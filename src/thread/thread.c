@@ -57,12 +57,15 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
                 if(current->next != NULL) {
                     current->next->prev = current->prev;
                 }
+                else {
+                    ctx->pool->members[ctx->index].last = current->prev;
+                }
 
                 free(current);
 
                 --ctx->pool->members[ctx->index].size;
 
-                if(ctx->pool->members[ctx->index].size >= -10) printf("Client disconnected! (%d in IO #%d)\n", ctx->pool->members[ctx->index].size, ctx->index);
+                printf("Client disconnected! (%d in IO #%d)\n", ctx->pool->members[ctx->index].size, ctx->index);
                 continue;
             }
 
