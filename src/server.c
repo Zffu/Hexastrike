@@ -6,12 +6,12 @@
 
 #include <server.h>
 #include <client/connection.h>
-#include <bench.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 
 #ifdef HEXASTRIKE_DEBUG_LOGS
+#include <bench.h>
 #include <debug.h>
 #endif
 
