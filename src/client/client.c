@@ -28,6 +28,10 @@ void c_dsconn(HEXASTRIKE_SERVER* server, int index, CONNECTION* c) {
     free(c);
     --server->pool.members[index].size;
 
+#ifndef HEXASTIRKE_NO_D_HANDLER
+    server->d_handler(c, index);
+#endif
+
 #ifdef HEXASTRIKE_DEBUG_LOGS
     printf("Client was disconnected (%d in IO #%d)\n", server->pool.members[index].size, index);
 #endif
