@@ -30,7 +30,16 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port);
 
 void hexastrike_sdown(HEXASTRIKE_SERVER* server);
 
+#ifndef HEXASTRIKE_NULL_CHECKS
 void hexastrike_dloop(HEXASTRIKE_SERVER* server);
+#else 
+unsigned char hexastrike_dloop(HEXASTRIKE_SERVER);
+#endif
+
+#ifndef HEXASTRIKE_NULL_CHECKS
 void hexastrike_iopinit(HEXASTRIKE_SERVER* server);
+#else
+unsigned char hexastrike_iopinit(HEXASTRIKE_SERVER* server);
+#endif
 
 #endif

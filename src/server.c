@@ -78,6 +78,7 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(i < 0) {
         printf("Server socket binding failed!\n");
+        return NULL;
     }
     #endif
 
@@ -86,6 +87,7 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(i < 0) {
         printf("Server socket listening failed!\n");
+        return NULL;
     }
     #endif
 
@@ -106,7 +108,7 @@ void hexastrike_sdown(HEXASTRIKE_SERVER* server) {
 
         CONNECTION* c = server->pool.members[i].root;
         
-        while(c == NULL) {
+        while(c != NULL) {
             CONNECTION* n = c->next;
 
             free(c);
@@ -117,7 +119,12 @@ void hexastrike_sdown(HEXASTRIKE_SERVER* server) {
     free(server);
 }
 
+#ifndef HEXASTRIKE_NULL_CHECKS
 void hexastrike_dloop(HEXASTRIKE_SERVER* server) {
+#else
+unsigned char hexastrike_dloop(HEXASTRIKE_SERVER* server) {
+#endif
+
 #ifndef HEXASTRIKE_NORUN_INDICATOR
     while(server->running) {
 #else 
@@ -170,18 +177,24 @@ void hexastrike_dloop(HEXASTRIKE_SERVER* server) {
 #endif
 
             }
-            #ifdef HEXASTRIKE_INFO_POOL_ASSOCIATION
+#ifdef HEXASTRIKE_NULL_CHECKS
             else {
-                printf("Client association in thread pool failed!\n");
+                return 0x00;
             }
-            #endif
+#endif
 
         }
     }
+#ifdef HEXASTRIKE_NULL_CHECKS
+    return 0x01;
+#endif
 }
 
-
+#ifndef HEXASTRIKE_NULL_CHECKS
 void hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
+#else
+unsigned char hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
+#endif
     for(int i = 0; i < HEXASTRIKE_IO_THREAD_POOL_MEMBERS; ++i) {
 
         IOPOOL_MEMBER_EXECCTX* ctx = malloc(sizeof(IOPOOL_MEMBER_EXECCTX));
@@ -193,13 +206,14 @@ void hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
 
 #ifdef _WIN32
         HANDLE thread = (HANDLE) _beginthreadex(NULL, 0, hexastrike_io_thread_pool_member_exec, ctx, 0, NULL);
-        
-        #ifdef HEXASTRIKE_NULL_CHECKS
+    
+#ifdef HEXASTRIKE_NULL_CHECKS
         if(thread == NULL) {
             printf("IO Thread creation failed!\n");
             free(ctx);
+            return 0x00;
         }
-        #endif
+#endif
 
         CloseHandle(thread);
 
@@ -207,15 +221,19 @@ void hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
         pthread_t t;
         int i = pthread_create(&t, NULL, hexastrike_io_thread_pool_member_exec, ctx);
 
-        #ifdef HEXASTRIKE_NULL_CHECKS
+#ifdef HEXASTRIKE_NULL_CHECKS
         if(i != 0) {
             printf("IO THread creation failed!\n");
             free(ctx);
+            return 0x00;
         }
-        #endif
+#endif
 
         pthread_detach(t);
 
 #endif
     }
+#ifdef HEXASTRIKE_NULL_CHECKS
+    return 0x01;
+#endif
 }
