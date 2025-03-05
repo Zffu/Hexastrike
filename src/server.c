@@ -186,12 +186,8 @@ void hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
 
         IOPOOL_MEMBER_EXECCTX* ctx = malloc(sizeof(IOPOOL_MEMBER_EXECCTX));
         ctx->index = i;
-
-#ifndef HEXASTIRKE_NO_R_HANDLER
-        ctx->r_handler = server->r_handler;
-#endif
-#ifndef HEXASTIRKE_NO_D_HANDLER
-        ctx->d_handler = server->d_handler;
+#if !defined (HEXASTIRKE_NO_D_HANDLER) || !defined(HEXASTIRKE_NO_R_HANDLER)
+        ctx->serverPtr = server;
 #endif
         ctx->pool = &server->pool;
 

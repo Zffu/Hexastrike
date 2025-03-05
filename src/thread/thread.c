@@ -71,7 +71,7 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
                 --ctx->pool->members[ctx->index].size;
 
 #ifndef HEXASTRIKE_NO_D_HANDLER
-                ctx->d_handler(current, ctx->index);
+                ctx->serverPtr->d_handler(current, ctx->index);
 #endif
 
 #ifdef HEXASTRIKE_DEBUG_LOGS
@@ -85,7 +85,7 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
             int r = recv(current->socket, buff, HEXASTRIKE_IO_BUFFER_SIZE, 0);
 
             if(r > 0) {
-                ctx->r_handler(current, buff, r, ctx->index);            
+                ctx->serverPtr->r_handler(current, buff, r, ctx->index);            
             }
         }
 #endif
