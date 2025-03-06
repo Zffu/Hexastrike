@@ -20,16 +20,16 @@ unsigned char conn_cconected(CONNECTION* c) {
     if (bytes_received == 0) {
         return 0x00; // Connection closed gracefully
     } else if (bytes_received < 0) {
-        #ifdef _WIN32
+#ifdef _WIN32
         int error = WSAGetLastError();
         if (error == WSAECONNRESET || error == WSAECONNABORTED) {
             return 0x00;
         }
-        #else
+#else
         if (errno == ECONNRESET || errno == ECONNABORTED) {
             return 0x00;
         }
-        #endif
+#endif
     }
     return 0x01;
 }
