@@ -9,11 +9,9 @@ unsigned __stdcall hexastrike_io_thread_pool_member_exec(void* arg); // HEXASTIR
 void* hexastrike_io_thread_pool_member_exec(void* arg); // HEXASTIRKE_IOPOOL_MEMBER_EXECCTX
 #endif
 
-#if defined(_WIN32) & defined (HEXASTRIKE_DLOOP_THREADED)
+#ifdef _WIN32
 unsigned __stdcall hexastrike_dloop_thread_exec(void* arg); // HEXASTRIKE_SERVER
-#endif
-
-#if !defined(_WIN32) & defined (HEXASTRIKE_DLOOP_THREADED)
+#else
 void* hexastrike_dloop_thread_exec(void* arg); // HEXASTRIKE_SERVER
 #endif
 

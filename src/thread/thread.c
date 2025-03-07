@@ -121,6 +121,94 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
     }
 }
 
+#ifdef _WIN32
+unsigned __stdcall hexastrike_dloop_thread_exec(void* arg) {
+#else
+void* hexastrike_dloop_thread_exec(void* arg) {
+#endif
+
+    HEXASTRIKE_SERVER* server = (HEXASTRIKE_SERVER*) arg;
+#ifdef HEXASTRIKE_SOFT_IO_THREAD
+    int empty_iter = 0;
+#endif
+
+    #ifndef HEXASTRIKE_NORUN_INDICATOR
+    while(server->running) {
+#else 
+    while(1) {
+#endif
+        saddr caddr;
+        int len = sizeof(caddr);
+
+        double t = get_time();
+        socket_t csocket = accept(server->server_socket, (saddr_g*) &caddr, &len);
+
+#ifdef HEXASTRIKE_SOFT_IO_THREAD
+        if(csocket == INVALID_SOCKET) {
+            ++empty_iter;
+
+            if(empty_iter >= 1000) {
+                thread_sleep(100);
+            }
+            else if(empty_iter >= 100) {
+                thread_sleep(10);
+            }
+            else if(empty_iter >= 10) {
+                thread_sleep(1);
+            }
+            continue;
+        } 
+        else {
+            empty_iter = 0;
+#else
+        if(csocket != INVALID_SOCKET) {
+#endif
+            int low = INT_MAX;
+            IO_THREADPOOL_MEMBER* m = NULL;
+
+            for(int i = 0; i < HEXASTRIKE_IO_THREAD_POOL_MEMBERS; ++i) {
+                if(server->pool.members[i].size < low) {
+                    m = &server->pool.members[i];
+                    low = m->size;
+                }
+            }
+
+            if(m != NULL) {
+#ifndef HEXASTRIKE_CONN_ALLOCSIZE
+                CONNECTION* c = malloc(sizeof(CONNECTION));
+#else
+                CONNECTION* c = malloc(HEXASTRIKE_CONN_ALLOCSIZE);
+#endif
+                c->address = caddr;
+                c->socket = csocket;
+                c->next = NULL;
+
+                if(m->root == NULL) {
+                    c->prev = NULL;
+                    m->root = c;
+                    m->last = c;
+                }
+                else {
+                    c->prev = m->last;
+                    m->last->next = c;
+                    m->last = c;
+                }
+                ++m->size;
+                
+                t = get_time() - t;
+            }
+#ifdef HEXASTRIKE_NULL_CHECKS
+            else {
+                continue;
+            }
+#endif
+        }
+    }
+}
+
+
+
+
 void thread_sleep(long time) {
 #ifdef _WIN32  
     Sleep(time);
