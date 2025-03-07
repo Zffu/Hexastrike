@@ -10,11 +10,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifdef HEXASTRIKE_DEBUG_LOGS
-#include <bench.h>
-#include <debug.h>
-#endif
-
 #ifdef _WIN32
 #include <WinSock2.h>
 #include <process.h>
@@ -170,12 +165,6 @@ unsigned char hexastrike_dloop(HEXASTRIKE_SERVER* server) {
                 ++m->size;
                 
                 t = get_time() - t;
-
-#ifdef HEXASTRIKE_DEBUG_LOGS
-                printf("Added new connection to thread pool in %.2fus!, size: %d\n", t, m->size);                
-                printf("Approximate Total RAM usage: %db\n", dmem_usage(server));
-#endif
-
             }
 #ifdef HEXASTRIKE_NULL_CHECKS
             else {
