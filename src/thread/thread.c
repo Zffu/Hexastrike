@@ -13,6 +13,47 @@
 #include <pthread.h>
 #endif
 
+#ifndef HEXASTIRKE_NO_D_HANDLER
+#define THREAD_DISCONNECT(ctx, c) \
+    if(c->prev != NULL) { \
+        c->prev->next = c->next; \
+    } \
+    else { \
+        ctx->pool->members[ctx->index].root = c->next; \
+    } \
+    \
+    if(c->next != NULL) { \
+        c->next->prev = c->prev; \
+    } \
+    else { \
+        ctx->pool->members[ctx->index].last = c->prev; \
+    } \
+    \
+    free(c); \
+    --ctx->pool->members[ctx->index].size; \
+    ctx->serverPtr->d_handler(c, ctx->index);
+
+#else
+#define THREAD_DISCONNECT(ctx, c) \
+    if(c->prev != NULL) { \
+        c->prev->next = c->next; \
+    } \
+    else { \
+        ctx->pool->members[ctx->index].root = c->next; \
+    } \
+    \
+    if(c->next != NULL) { \
+        c->next->prev = c->prev; \
+    } \
+    else { \
+        ctx->pool->members[ctx->index].last = c->prev; \
+    } \
+    \
+    free(c); \
+    --ctx->pool->members[ctx->index].size; 
+
+#endif
+
 #ifdef _WIN32
 unsigned __stdcall hexastrike_io_thread_pool_member_exec(void* arg) { 
 #else 
@@ -46,50 +87,37 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
 
         CONNECTION* c = ctx->pool->members[ctx->index].root;
 
-        while(c != NULL) {
-            CONNECTION* current = c;
+        while (c != NULL) {
+            CONNECTION* curr = c;
             c = c->next;
+            unsigned char buff[HEXASTRIKE_IO_BUFFER_SIZE] = {0};
 
-            if(conn_cconected(current) == 0x00) {
-                
-                if(current->prev != NULL) {
-                    current->prev->next = current->next;
-                }
-                else {
-                    ctx->pool->members[ctx->index].root = current->next;
-                }
+            int r = recv(curr->socket, buff, HEXASTRIKE_IO_BUFFER_SIZE, 0);
 
-                if(current->next != NULL) {
-                    current->next->prev = current->prev;
-                }
-                else {
-                    ctx->pool->members[ctx->index].last = current->prev;
-                }
-
-                free(current);
-
-                --ctx->pool->members[ctx->index].size;
-
-#ifndef HEXASTRIKE_NO_D_HANDLER
-                ctx->serverPtr->d_handler(current, ctx->index);
-#endif
-
-#ifdef HEXASTRIKE_DEBUG_LOGS
-                printf("Client disconnected! (%d in IO #%d)\n", ctx->pool->members[ctx->index].size, ctx->index);
-#endif
+            if(r == 0) {
+                THREAD_DISCONNECT(ctx, curr);
                 continue;
+            }
+            else if(r < 0) {
+                #ifdef _WIN32
+                int e = WSAGetLastError();
+                if(e == WSAECONNRESET || e == WSAECONNABORTED) {
+                    THREAD_DISCONNECT(ctx, curr);
+                    continue;
+                }
+                #else
+                if (errno == ECONNRESET || errno == ECONNABORTED) {
+                    THREAD_DISCONNECT(ctx, curr);
+                    continue;
+                }
+                #endif
             }
 
 #ifndef HEXASTIRKE_NO_R_HANDLER
-            char buff[HEXASTRIKE_IO_BUFFER_SIZE];
-            int r = recv(current->socket, buff, HEXASTRIKE_IO_BUFFER_SIZE, 0);
-
-            if(r > 0) {
-                ctx->serverPtr->r_handler(current, buff, r, ctx->index);            
-            }
-        }
+            ctx->serverPtr->r_handler(curr, buff, r, ctx->index);
 #endif
 
+        }
     }
 }
 
