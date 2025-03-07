@@ -221,3 +221,15 @@ unsigned char hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
     return 0x01;
 #endif
 }
+
+void hexastrike_dloop_tinit(HEXASTRIKE_SERVER* server) {
+#ifdef _WIN32
+    HANDLE thread = (HANDLE) _beginthreadex(NULL, 0, hexastrike_dloop_thread_exec, server, 0, NULL);
+    CloseHandle(thread);
+
+#else
+    pthread_t t;
+    int i = pthread_create(&t, NULL, hexastrike_dloop_thread_exec, server);
+    pthread_detach(t);
+#endif
+}

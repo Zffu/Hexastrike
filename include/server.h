@@ -49,4 +49,6 @@ void hexastrike_iopinit(HEXASTRIKE_SERVER* server);
 unsigned char hexastrike_iopinit(HEXASTRIKE_SERVER* server);
 #endif
 
+void hexastrike_dloop_tinit(HEXASTRIKE_SERVER* server);
+
 #endif
