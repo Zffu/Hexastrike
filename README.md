@@ -1,4 +1,6 @@
 # Hexastrike
+![GitHub Release](https://img.shields.io/github/v/release/Zffu/Hexastrike?include_prereleases)
+
 
 Hexastrike is a **simplicity and efficiency driven** *Socket server* framework written in *C*.
 
