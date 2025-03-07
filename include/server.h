@@ -3,6 +3,12 @@
 
 #include <client/connection.h>
 
+#define ERRSOCKETINIT (-1L << 0)
+#define ERRSOCKETLISTEN (-1L << 1)
+#define ERRPOOLASSOCIATION (-1L << 2)
+#define ERRIOTHREADINIT (-1L << 3)
+
+
 #ifndef SERVER_H
 #define SERVER_H
 
