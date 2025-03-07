@@ -3,15 +3,25 @@
 
 #include <client/connection.h>
 
+#ifdef HEXASTRIKE_FLAGS
+
+#define FLAG_NO_RECIEVE_HANDLER (1L << 0)
+#define FLAG_NO_DISCONNECT_HANDLER (1L << 1)
+#define FLAG_NULL_CHECKING (1L << 2)
+
+#define FLAG_SOFT_IO_THREADS (1L << 3)
+
+#endif
+
 #ifndef SERVER_H
 #define SERVER_H
 
 // Hexastrike server root struct
 typedef struct HEXASTRIKE_SOCKET_SERVER {
 
-    #ifndef HEXASTRIKE_NORUN_INDICATOR
+#ifndef HEXASTRIKE_NORUN_INDICATOR
     unsigned char running;
-    #endif
+#endif
 
     socket_t server_socket;
     IO_THREAD_POOL pool;
