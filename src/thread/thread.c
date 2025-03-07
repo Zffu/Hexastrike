@@ -13,7 +13,7 @@
 #include <pthread.h>
 #endif
 
-#ifndef HEXASTIRKE_NO_D_HANDLER
+#ifndef HEXASTRIKE_NO_D_HANDLER
 #define THREAD_DISCONNECT(ctx, c) \
     if(c->prev != NULL) { \
         c->prev->next = c->next; \
@@ -113,7 +113,7 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
                 #endif
             }
 
-#ifndef HEXASTIRKE_NO_R_HANDLER
+#ifndef HEXASTRIKE_NO_R_HANDLER
             ctx->serverPtr->r_handler(curr, buff, r, ctx->index);
 #endif
 
@@ -132,7 +132,7 @@ void* hexastrike_dloop_thread_exec(void* arg) {
     int empty_iter = 0;
 #endif
 
-    #ifndef HEXASTRIKE_NORUN_INDICATOR
+#ifndef HEXASTRIKE_NORUN_INDICATOR
     while(server->running) {
 #else 
     while(1) {
@@ -140,7 +140,6 @@ void* hexastrike_dloop_thread_exec(void* arg) {
         saddr caddr;
         int len = sizeof(caddr);
 
-        double t = get_time();
         socket_t csocket = accept(server->server_socket, (saddr_g*) &caddr, &len);
 
 #ifdef HEXASTRIKE_SOFT_IO_THREAD
@@ -194,8 +193,6 @@ void* hexastrike_dloop_thread_exec(void* arg) {
                     m->last = c;
                 }
                 ++m->size;
-                
-                t = get_time() - t;
             }
 #ifdef HEXASTRIKE_NULL_CHECKS
             else {

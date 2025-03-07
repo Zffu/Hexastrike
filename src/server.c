@@ -58,7 +58,7 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
 
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(server->server_socket < 0) {
-        return ERRSOCKETINIT;
+        return (void*) ERRSOCKETINIT;
     }
     #endif
 
@@ -71,7 +71,7 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
 
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(i < 0) {
-        return ERRSOCKETBIND;
+        return (void*) ERRSOCKETBIND;
     }
     #endif
 
@@ -79,7 +79,7 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
 
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(i < 0) {
-        return ERRSOCKETLISTEN;
+        return (void*) ERRSOCKETLISTEN;
     }
     #endif
 
@@ -125,7 +125,6 @@ unsigned char hexastrike_dloop(HEXASTRIKE_SERVER* server) {
         saddr caddr;
         int len = sizeof(caddr);
 
-        double t = get_time();
         socket_t csocket = accept(server->server_socket, (saddr_g*) &caddr, &len);
 
         if(csocket != INVALID_SOCKET) {
@@ -161,7 +160,6 @@ unsigned char hexastrike_dloop(HEXASTRIKE_SERVER* server) {
                 }
                 ++m->size;
                 
-                t = get_time() - t;
             }
 #ifdef HEXASTRIKE_NULL_CHECKS
             else {

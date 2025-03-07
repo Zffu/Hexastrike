@@ -3,11 +3,11 @@
 
 #include <client/connection.h>
 
-#define ERRSOCKETINIT (-1L << 0)
-#define ERRSOCKETBIND (-1L << 1)
-#define ERRSOCKETLISTEN (-1L << 2)
-#define ERRPOOLASSOCIATION (-1L << 3)
-#define ERRIOTHREADINIT (-1L << 4)
+#define ERRSOCKETINIT (-1 << 0)
+#define ERRSOCKETBIND (-1 << 1)
+#define ERRSOCKETLISTEN (-1 << 2)
+#define ERRPOOLASSOCIATION (-1 << 3)
+#define ERRIOTHREADINIT (-1 << 4)
 
 
 #ifndef SERVER_H
@@ -40,7 +40,7 @@ void hexastrike_sdown(HEXASTRIKE_SERVER* server);
 #ifndef HEXASTRIKE_NULL_CHECKS
 void hexastrike_dloop(HEXASTRIKE_SERVER* server);
 #else 
-unsigned char hexastrike_dloop(HEXASTRIKE_SERVER);
+unsigned char hexastrike_dloop(HEXASTRIKE_SERVER* server);
 #endif
 
 #ifndef HEXASTRIKE_NULL_CHECKS

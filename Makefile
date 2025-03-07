@@ -5,7 +5,7 @@ ifeq ($(OS),Windows_NT)
     EXE_EXT = .exe
     RM = del /Q
     LIB_CMD = ar rcs $@
-    PLATFORM_LIBS = ws2_32.lib
+    PLATFORM_LIBS = -lws2_32
 else
     PLATFORM = Unix
     LIB_EXT = .a

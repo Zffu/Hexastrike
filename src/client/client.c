@@ -28,7 +28,7 @@ void c_dsconn(HEXASTRIKE_SERVER* server, int index, CONNECTION* c) {
     free(c);
     --server->pool.members[index].size;
 
-#ifndef HEXASTIRKE_NO_D_HANDLER
+#ifndef HEXASTRIKE_NO_D_HANDLER
     server->d_handler(c, index);
 #endif
 
