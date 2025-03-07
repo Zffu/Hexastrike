@@ -58,8 +58,7 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
 
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(server->server_socket < 0) {
-        printf("Server socket creation failed!\n");
-        return NULL;
+        return ERRSOCKETINIT;
     }
     #endif
 
@@ -72,8 +71,7 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
 
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(i < 0) {
-        printf("Server socket binding failed!\n");
-        return NULL;
+        return ERRSOCKETBIND;
     }
     #endif
 
@@ -81,8 +79,7 @@ HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
 
     #ifdef HEXASTRIKE_NULL_CHECKS
     if(i < 0) {
-        printf("Server socket listening failed!\n");
-        return NULL;
+        return ERRSOCKETLISTEN;
     }
     #endif
 
@@ -168,7 +165,7 @@ unsigned char hexastrike_dloop(HEXASTRIKE_SERVER* server) {
             }
 #ifdef HEXASTRIKE_NULL_CHECKS
             else {
-                return 0x00;
+                return ERRPOOLASSOCIATION;
             }
 #endif
 
@@ -198,9 +195,8 @@ unsigned char hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
     
 #ifdef HEXASTRIKE_NULL_CHECKS
         if(thread == NULL) {
-            printf("IO Thread creation failed!\n");
             free(ctx);
-            return 0x00;
+            return ERRIOTHREADINIT;
         }
 #endif
 
@@ -212,9 +208,8 @@ unsigned char hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
 
 #ifdef HEXASTRIKE_NULL_CHECKS
         if(i != 0) {
-            printf("IO THread creation failed!\n");
             free(ctx);
-            return 0x00;
+            return ERRIOTHREADINIT;
         }
 #endif
 
