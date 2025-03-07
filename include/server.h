@@ -26,9 +26,39 @@ typedef struct HEXASTRIKE_SOCKET_SERVER {
 
 } HEXASTRIKE_SERVER;
 
+// Hexastrike flag server root struct
+typedef struct HEXASTIRKE_FLAG_SOCKET_SERVER {
+
+#ifndef HEXASTRIKE_NORUN_INDICATOR
+    unsigned char running;
+#endif
+
+    socket_t server_socket;
+    IO_THREAD_POOL pool;
+
+    void (*r_handler)(CONNECTION*, unsigned char*, int, int);
+    void (*d_handler)(CONNECTION*, int);
+
+#ifdef HEXASTRIKE_NORUN_INDICATOR
+    unsigned char running; // ptr conversion offset
+#endif
+
+    int flags;
+
+    int ioPoolThreads;
+    int ioBufferSize;
+    int connectionAllocSize;
+} HEXASTRIKE_F_SERVER;
+
+
 HEXASTRIKE_SERVER* hexastrike_sinit(short port);
+HEXASTRIKE_F_SERVER* hexastrike_fsinit(short port);
 
 void hexastrike_sdown(HEXASTRIKE_SERVER* server);
+void hexastrike_fsdown(HEXASTRIKE_F_SERVER* server);
+
+unsigned char hexastrike_fdloop(HEXASTRIKE_F_SERVER* server);
+unsigned char hexastrike_fiopinit(HEXASTRIKE_F_SERVER* server);
 
 #ifndef HEXASTRIKE_NULL_CHECKS
 void hexastrike_dloop(HEXASTRIKE_SERVER* server);
