@@ -31,6 +31,10 @@ typedef struct HEXASTRIKE_SOCKET_SERVER {
     void (*d_handler)(CONNECTION*, int);
 #endif
 
+#ifdef HEXASTRIKE_IO_PEEKSIZE
+    int (*size_determinator)(unsigned char*, int);
+#endif
+
 } HEXASTRIKE_SERVER;
 
 HEXASTRIKE_SERVER* hexastrike_sinit(short port);

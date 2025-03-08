@@ -92,8 +92,11 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
             c = c->next;
             unsigned char buff[HEXASTRIKE_IO_BUFFER_SIZE] = {0};
 
+#ifndef HEXASTRIKE_IO_PEEKSIZE
             int r = recv(curr->socket, buff, HEXASTRIKE_IO_BUFFER_SIZE, 0);
-
+#else
+            int r = recv(curr->socket, buff, HEXASTRIKE_IO_BUFFER_SIZE, MSG_PEEK);
+#endif
             if(r == 0) {
                 THREAD_DISCONNECT(ctx, curr);
                 continue;
@@ -113,8 +116,17 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
                 #endif
             }
 
+#ifdef HEXASTRIKE_IO_PEEKSIZE
+            int sz = ctx->serverPtr->size_determinator(buff, r);
+            unsigned char* bb = malloc(sz);
+
+            r = recv(curr->socket, bb, sz, 0);
+#else
+            unsigned char* bb = buff;
+#endif
+
 #ifndef HEXASTRIKE_NO_R_HANDLER
-            ctx->serverPtr->r_handler(curr, buff, r, ctx->index);
+            ctx->serverPtr->r_handler(curr, bb, r, ctx->index);
 #endif
 
         }
