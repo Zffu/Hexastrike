@@ -36,9 +36,6 @@ Here's the list of building options that you can add in the Makefile currently:
 
 - `-DHEXASTRIKE_SOFT_IO_THREAD`: Makes the IO threads slower and softer when no client is connected.
 
-- `-DHEXASTRIKE_NO_R_HANDLER`: Removes and disables the handling for recieved bytes.
-- `-DHEXASTRIKE_NO_D_HANDLER`: Removes and disables the handling for disconnected connections.
-
 - `-DHEXASTRIKE_CONN_ALLOCSIZE`: Determines how much bytes will be allocated to each connection.
 
 ## Usage
@@ -95,6 +92,18 @@ int main() {
 This will register the `handle_input` function as the handler `r_handler` which handles recieved client data.
 
 In this simple example, we notify how much bytes were recieved and disconnect the client after by using `c_dsconn`
+
+**Note: ** The `r_handler` is the only handler enabled by default, to enable the other handlers, you must add the flags for the specific handler.
+
+Here's an example on how to enable the disconnect handler (`d_handler`):
+```C
+#include <hexastrike.h>
+
+int main() {
+    // Existing server code...
+    server->flags |= F_HANDLE_DISCONNECT;
+}
+```
 
 ### Storing data for connections
 
