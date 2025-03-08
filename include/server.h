@@ -23,9 +23,7 @@ typedef struct HEXASTRIKE_SOCKET_SERVER {
     socket_t server_socket;
     IO_THREAD_POOL pool;
 
-#ifndef HEXASTIRKE_NO_R_HANDLER
     void (*r_handler)(CONNECTION*, unsigned char*, int, int);
-#endif
 
 #ifndef HEXASTRIKE_NO_D_HANDLER
     void (*d_handler)(CONNECTION*, int);

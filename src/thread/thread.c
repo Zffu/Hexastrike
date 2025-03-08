@@ -125,10 +125,7 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
             unsigned char* bb = buff;
 #endif
 
-#ifndef HEXASTRIKE_NO_R_HANDLER
             ctx->serverPtr->r_handler(curr, bb, r, ctx->index);
-#endif
-
         }
     }
 }
