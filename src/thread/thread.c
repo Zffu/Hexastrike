@@ -13,7 +13,10 @@
 #include <pthread.h>
 #endif
 
-#ifndef HEXASTRIKE_NO_D_HANDLER
+#ifndef HEXASTRIKE_FASTMOD
+#endif
+
+
 #define THREAD_DISCONNECT(ctx, c) \
     if(c->prev != NULL) { \
         c->prev->next = c->next; \
@@ -31,28 +34,7 @@
     \
     free(c); \
     --ctx->pool->members[ctx->index].size; \
-    ctx->serverPtr->d_handler(c, ctx->index);
-
-#else
-#define THREAD_DISCONNECT(ctx, c) \
-    if(c->prev != NULL) { \
-        c->prev->next = c->next; \
-    } \
-    else { \
-        ctx->pool->members[ctx->index].root = c->next; \
-    } \
-    \
-    if(c->next != NULL) { \
-        c->next->prev = c->prev; \
-    } \
-    else { \
-        ctx->pool->members[ctx->index].last = c->prev; \
-    } \
-    \
-    free(c); \
-    --ctx->pool->members[ctx->index].size; 
-
-#endif
+    if(ctx->serverPtr->flags & F_HANDLE_DISCONNECT) ctx->serverPtr->d_handler(c, ctx->index);
 
 #ifdef _WIN32
 unsigned __stdcall hexastrike_io_thread_pool_member_exec(void* arg) { 
@@ -61,12 +43,13 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
 #endif
     IOPOOL_MEMBER_EXECCTX* ctx = (IOPOOL_MEMBER_EXECCTX*) arg;
 
-#ifdef HEXASTRIKE_SOFT_IO_THREAD
+#if defined(HEXASTRIKE_SOFT_IO_THREAD)
     int empty_iter = 0;
 #endif
+
     while(ctx->pool->indicator & (1L << ctx->index)) {
         if(ctx->pool->members[ctx->index].size == 0) {
-#ifdef HEXASTRIKE_SOFT_IO_THREAD
+#if defined(HEXASTRIKE_SOFT_IO_THREAD)
             ++empty_iter;
 
             if(empty_iter >= 1000) {
@@ -92,11 +75,8 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
             c = c->next;
             unsigned char buff[HEXASTRIKE_IO_BUFFER_SIZE] = {0};
 
-#ifndef HEXASTRIKE_IO_PEEKSIZE
-            int r = recv(curr->socket, buff, HEXASTRIKE_IO_BUFFER_SIZE, 0);
-#else
-            int r = recv(curr->socket, buff, HEXASTRIKE_IO_BUFFER_SIZE, MSG_PEEK);
-#endif
+            int r = recv(curr->socket, buff, HEXASTIRKE_IO_BUFFER_SIZE, (ctx->serverPtr->flags & F_PEEK_BUFF_SIZE) ? MSG_PEEK : 0);
+
             if(r == 0) {
                 THREAD_DISCONNECT(ctx, curr);
                 continue;
@@ -116,16 +96,15 @@ void* hexastrike_io_thread_pool_member_exec(void* arg) {
                 #endif
             }
 
-#ifdef HEXASTRIKE_IO_PEEKSIZE
-            int sz = ctx->serverPtr->size_determinator(buff, r);
-            unsigned char* bb = malloc(sz);
+            if(ctx->serverPtr->flags & F_PEEK_BUFF_SIZE) {
+                int sz = ctx->serverPtr->size_determinator(buff, r);
+                free(buff);
+                buff = malloc(sz);
 
-            r = recv(curr->socket, bb, sz, 0);
-#else
-            unsigned char* bb = buff;
-#endif
+                r = recv(curr->socket, buff, sz, 0);
+            }
 
-            ctx->serverPtr->r_handler(curr, bb, r, ctx->index);
+            ctx->serverPtr->r_handler(curr, buff, r, ctx->index);
         }
     }
 }
@@ -141,11 +120,7 @@ void* hexastrike_dloop_thread_exec(void* arg) {
     int empty_iter = 0;
 #endif
 
-#ifndef HEXASTRIKE_NORUN_INDICATOR
     while(server->running) {
-#else 
-    while(1) {
-#endif
         saddr caddr;
         int len = sizeof(caddr);
 

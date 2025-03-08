@@ -30,13 +30,13 @@ Here's the list of building options that you can add in the Makefile currently:
 - `-DHEXASTRIKE_NULL_CHECKS`: If this option is added, Hexastrike will have null checks
 
 - `-DHEXASTRIKE_IO_THREAD_POOL_MEMBERS` (Required): Determines the amounts of IO working threads that Hexastrike will have
-- `DHEXASTIRKE_IOTHREAD_INDICATOR` (Required): Determines the type of number that Hexastrike will use to store Thread active statuses. Must be a type that contains enough bits for all of the thread pool members to have a bit each.
+- `DHEXASTRIKE_IOTHREAD_INDICATOR` (Required): Determines the type of number that Hexastrike will use to store Thread active statuses. Must be a type that contains enough bits for all of the thread pool members to have a bit each.
 
 - `-DHEXASTRIKE_IO_BUFFER_SIZE` (Required): The size of the IO byte buffer that Hexastrike will process.
 
 - `-DHEXASTRIKE_SOFT_IO_THREAD`: Makes the IO threads slower and softer when no client is connected.
 
-- `-DHEXASTIRKE_NO_R_HANDLER`: Removes and disables the handling for recieved bytes.
+- `-DHEXASTRIKE_NO_R_HANDLER`: Removes and disables the handling for recieved bytes.
 - `-DHEXASTRIKE_NO_D_HANDLER`: Removes and disables the handling for disconnected connections.
 
 - `-DHEXASTRIKE_CONN_ALLOCSIZE`: Determines how much bytes will be allocated to each connection.
@@ -53,7 +53,7 @@ Here's the list of building options that you can add in the Makefile currently:
     #define PORT 8080
 
     int main() {
-        HEXASTIRKE_SERVER* server = hexastrike_sinit(PORT);
+        HEXASTRIKE_SERVER* server = hexastrike_sinit(PORT);
     }
     ```
 
@@ -83,7 +83,7 @@ Instead of using an event loop like `epoll` for instance, Hexastrike uses a func
 
 void handle_input(CONNECTION* conn, unsigned char* buff, int size, int index) {
     printf("[IO #%d] Client sent %d bytes!\n", index, size);
-    c_dsconn(server, index, conn); // server represents your HEXASTIRKE_SERVER instance.
+    c_dsconn(server, index, conn); // server represents your HEXASTRIKE_SERVER instance.
 }
 
 int main() {

@@ -28,6 +28,7 @@
 HEXASTRIKE_SERVER* hexastrike_sinit(short port) {
 
     HEXASTRIKE_SERVER* server = malloc(sizeof(HEXASTRIKE_SERVER));
+    server->flags = 0;
 
     server->pool.indicator = ~(server->pool.indicator & 0); // Sets indicators to running
 
@@ -117,11 +118,7 @@ void hexastrike_dloop(HEXASTRIKE_SERVER* server) {
 unsigned char hexastrike_dloop(HEXASTRIKE_SERVER* server) {
 #endif
 
-#ifndef HEXASTRIKE_NORUN_INDICATOR
     while(server->running) {
-#else 
-    while(1) {
-#endif
         saddr caddr;
         int len = sizeof(caddr);
 
@@ -183,7 +180,7 @@ unsigned char hexastrike_iopinit(HEXASTRIKE_SERVER* server) {
 
         IOPOOL_MEMBER_EXECCTX* ctx = malloc(sizeof(IOPOOL_MEMBER_EXECCTX));
         ctx->index = i;
-#if !defined (HEXASTIRKE_NO_D_HANDLER) || !defined(HEXASTIRKE_NO_R_HANDLER)
+#if !defined (HEXASTRIKE_NO_D_HANDLER) || !defined(HEXASTRIKE_NO_R_HANDLER) || !defined(HEXASTRIKE_FASTMODE)
         ctx->serverPtr = server;
 #endif
         ctx->pool = &server->pool;

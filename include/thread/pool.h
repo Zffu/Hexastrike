@@ -30,7 +30,7 @@ typedef struct {
 typedef struct HEXASTRIKE_IO_THREAD_POOL {
 
     IO_THREADPOOL_MEMBER members[HEXASTRIKE_IO_THREAD_POOL_MEMBERS];
-    HEXASTIRKE_IOTHREAD_INDICATOR indicator; // bit -> thread preserve storage
+    HEXASTRIKE_IOTHREAD_INDICATOR indicator; // bit -> thread preserve storage
 
 } IO_THREAD_POOL;
 

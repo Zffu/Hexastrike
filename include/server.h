@@ -9,29 +9,23 @@
 #define ERRPOOLASSOCIATION (-1 << 3)
 #define ERRIOTHREADINIT (-1 << 4)
 
-
 #ifndef SERVER_H
 #define SERVER_H
 
 // Hexastrike server root struct
 typedef struct HEXASTRIKE_SOCKET_SERVER {
 
-    #ifndef HEXASTRIKE_NORUN_INDICATOR
     unsigned char running;
-    #endif
 
     socket_t server_socket;
     IO_THREAD_POOL pool;
 
+    long flags;
+
     void (*r_handler)(CONNECTION*, unsigned char*, int, int);
-
-#ifndef HEXASTRIKE_NO_D_HANDLER
     void (*d_handler)(CONNECTION*, int);
-#endif
 
-#ifdef HEXASTRIKE_IO_PEEKSIZE
     int (*size_determinator)(unsigned char*, int);
-#endif
 
 } HEXASTRIKE_SERVER;
 

@@ -17,3 +17,7 @@ typedef struct sockaddr_in saddr;
 typedef struct sockaddr saddr_g;
 
 #endif
+
+
+#define F_HANDLE_DISCONNECT (1 << 2)
+#define F_PEEK_BUFF_SIZE (1 << 3)
