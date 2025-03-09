@@ -70,6 +70,12 @@ Here's the list of building options that you can add in the Makefile currently:
     hexastrike_dloop(server);
     ```
 
+    Alternatively, if you want to keep the main thread and use another for `IO Discovery` / `IO Listening`, you can do this instead:
+    
+    ```C
+    hexastrike_dloop_tinit(server);
+    ```
+
 ### Adding Handlers
 
 Instead of using an event loop like `epoll` for instance, Hexastrike uses a function driven alternative:
