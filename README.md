@@ -99,7 +99,7 @@ This will register the `handle_input` function as the handler `r_handler` which 
 
 In this simple example, we notify how much bytes were recieved and disconnect the client after by using `c_dsconn`
 
-**Note: ** The `r_handler` is the only handler enabled by default, to enable the other handlers, you must add the flags for the specific handler.
+**Note:** The `r_handler` is the only handler enabled by default, to enable the other handlers, you must add the flags for the specific handler.
 
 Here's an example on how to enable the disconnect handler (`d_handler`):
 ```C
